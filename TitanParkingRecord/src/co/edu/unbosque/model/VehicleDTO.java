@@ -24,11 +24,11 @@ public class VehicleDTO implements Serializable {
 		this.entranceHour = entranceHour;
 	}
 
-	public String getTipe() {
+	public String getType() {
 		return type;
 	}
 
-	public void setTipe(String tipe) {
+	public void setType(String tipe) {
 		this.type = tipe;
 	}
 
@@ -57,8 +57,8 @@ public class VehicleDTO implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Type of vehicle: " + this.type + "\n");
 		sb.append("Plate of the vehicle: "
-				+ ((this.type.equals("car") || this.type.equals("bike")) ? this.plate : "null plate") + "\n");
-		sb.append("Entrance hour: " + this.entranceHour + "\n");
+				+ ((this.type.equals("Car") || this.type.equals("Motorcycle")) ? this.plate : "null plate") + "\n");
+		sb.append("Entrance hour: " + this.entranceHour.toString().substring(0, 8) + "\n");
 
 		return sb.toString();
 	}

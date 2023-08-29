@@ -7,17 +7,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalTime;
 
-import co.edu.unbosque.view.Add;
+import co.edu.unbosque.model.VehicleDAO;
+import co.edu.unbosque.model.VehicleDTO;
 import co.edu.unbosque.view.MainWindow;
-import co.edu.unbosque.view.Menu;
 
 public class Controller implements MouseListener, ActionListener {
 
 	private MainWindow mwin;
+	private VehicleDAO vdao;
 
 	public Controller() {
 		mwin = new MainWindow();
-
+		vdao = new VehicleDAO();
+		chargeModel();
 		addReaders();
 	}
 
@@ -42,10 +44,24 @@ public class Controller implements MouseListener, ActionListener {
 
 		mwin.getAddPanel().getConfirm().addActionListener(this);
 		mwin.getAddPanel().getConfirm().setActionCommand("confirm");
+
 	}
 
 	public void run() {
 
+	}
+
+	public void chargeModel() {
+		for (int i = 0; i < vdao.getVehiclesList().size(); i++) {
+
+			if (vdao.getVehiclesList().get(i).getType().equals("Car")
+					|| vdao.getVehiclesList().get(i).getType().equals("Motorcycle")) {
+				mwin.getMenu().getModel().add(0, vdao.getVehiclesList().get(i).getPlate());
+
+			} else {
+				mwin.getMenu().getModel().add(0, vdao.getVehiclesList().get(i).getType());
+			}
+		}
 	}
 
 	@Override
@@ -58,8 +74,12 @@ public class Controller implements MouseListener, ActionListener {
 				int aux = mwin.delete(0);
 
 				if (aux == 0) {
-					mwin.getMenu().getModel().remove(0);
+
+					int index = mwin.getMenu().getList().getSelectedIndex();
+					vdao.delete(index);
+					mwin.getMenu().getModel().remove(index);
 					mwin.delete(1);
+
 				} else {
 
 					mwin.delete(2);
@@ -77,12 +97,7 @@ public class Controller implements MouseListener, ActionListener {
 		case "show": {
 
 			if (mwin.getMenu().getList().getSelectedValue() != null) {
-
-				// Aquí meter la lógica para mostrar el vehiculo de la lista | Ejemplo:
-
-				LocalTime time = LocalTime.now();
-
-				mwin.show("Car", "CBB-013", time);
+				mwin.show(vdao.getVehiclesList().get(mwin.getMenu().getList().getSelectedIndex()).toString());
 
 			} else {
 
@@ -95,8 +110,12 @@ public class Controller implements MouseListener, ActionListener {
 
 		case "addbtn": {
 
-			mwin.getMenu().setVisible(false);
-			mwin.getAddPanel().setVisible(true);
+			if (!(vdao.getVehiclesList().size() >= 100)) {
+				mwin.getMenu().setVisible(false);
+				mwin.getAddPanel().setVisible(true);
+			} else {
+				mwin.show("We can´t accept more vehicles now, come back later...");
+			}
 
 			break;
 		}
@@ -172,6 +191,7 @@ public class Controller implements MouseListener, ActionListener {
 		case "confirm": {
 
 			String aux = (String) mwin.getAddPanel().getType().getSelectedItem();
+			LocalTime tempTime = LocalTime.now();
 
 			if (aux.equals("Null")) {
 
@@ -194,12 +214,14 @@ public class Controller implements MouseListener, ActionListener {
 
 			if (!mwin.getAddPanel().getPlate().getText().isEmpty()) {
 
-				mwin.getMenu().getModel().add(0, mwin.getAddPanel().getPlate().getText());
+				vdao.add(new VehicleDTO(aux, mwin.getAddPanel().getPlate().getText(), tempTime));
+				mwin.getMenu().getModel().addElement(mwin.getAddPanel().getPlate().getText());
 				mwin.getAddPanel().getPlate().setText("");
 				mwin.getAddPanel().getType().setSelectedItem("Null");
 
 			} else if (!aux.equals("Null")) {
-				mwin.getMenu().getModel().add(0, aux);
+				vdao.add(new VehicleDTO(aux, "null", tempTime));
+				mwin.getMenu().getModel().addElement(aux);
 				mwin.getAddPanel().getPlate().setText("");
 				mwin.getAddPanel().getType().setSelectedItem("Null");
 

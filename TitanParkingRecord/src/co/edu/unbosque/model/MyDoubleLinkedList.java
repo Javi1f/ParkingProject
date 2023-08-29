@@ -1,7 +1,13 @@
 package co.edu.unbosque.model;
 
-public class MyDoubleLinkedList<E> {
+import java.io.Serializable;
 
+public class MyDoubleLinkedList<E> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5291373039048749614L;
 	protected DNode<E> head;
 	protected DNode<E> currentPosition;
 
@@ -123,21 +129,34 @@ public class MyDoubleLinkedList<E> {
 			}
 
 			if (currentPosition.getNext() != null) {
-				currentPosition.getPrev().setNext(currentPosition.getNext());
-				currentPosition.getNext().setPrev(currentPosition.getPrev());
+
+				if (currentPosition.getPrev() == null) {
+					currentPosition.getNext().setPrev(null);
+					head = currentPosition.getNext();
+
+				} else {
+					currentPosition.getPrev().setNext(currentPosition.getNext());
+					currentPosition.getNext().setPrev(currentPosition.getPrev());
+				}
+
 			} else {
-				currentPosition.getPrev().setNext(null);
+				if (currentPosition.getPrev() != null) {
+					currentPosition.getPrev().setNext(null);
+				} else {
+					head = null;
+				}
 			}
 		}
 	}
+
 	public E get(int i) {
 		int index = 0;
-		E info= null;
-		
+		E info = null;
+
 		if (i > size() || head == null || i < 0) {
 			return info;
 		}
-		
+
 		currentPosition = head;
 		if (!this.isEmpty()) {
 			while (index < i) {
