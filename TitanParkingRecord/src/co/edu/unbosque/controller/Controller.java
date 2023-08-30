@@ -52,14 +52,29 @@ public class Controller implements MouseListener, ActionListener {
 	}
 
 	public void chargeModel() {
+		mwin.getMenu().getModel().clear();
+		for (int i = 1; i < vdao.getVehiclesList().size(); i++) {
+
+			if (vdao.getVehiclesList().get(i).getType().equals("Car")
+					|| vdao.getVehiclesList().get(i).getType().equals("Motorcycle")) {
+				mwin.getMenu().getModel().addElement(vdao.getVehiclesList().get(i).getPlate());
+
+			} else {
+				mwin.getMenu().getModel().addElement(vdao.getVehiclesList().get(i).getType());
+			}
+		}
+	}
+
+	public void chargeModelFromZero() {
+		mwin.getMenu().getModel().clear();
 		for (int i = 0; i < vdao.getVehiclesList().size(); i++) {
 
 			if (vdao.getVehiclesList().get(i).getType().equals("Car")
 					|| vdao.getVehiclesList().get(i).getType().equals("Motorcycle")) {
-				mwin.getMenu().getModel().add(0, vdao.getVehiclesList().get(i).getPlate());
+				mwin.getMenu().getModel().addElement(vdao.getVehiclesList().get(i).getPlate());
 
 			} else {
-				mwin.getMenu().getModel().add(0, vdao.getVehiclesList().get(i).getType());
+				mwin.getMenu().getModel().addElement(vdao.getVehiclesList().get(i).getType());
 			}
 		}
 	}
@@ -76,7 +91,7 @@ public class Controller implements MouseListener, ActionListener {
 				if (aux == 0) {
 
 					int index = mwin.getMenu().getList().getSelectedIndex();
-					vdao.delete(index);
+					vdao.delete(index + 1);
 					mwin.getMenu().getModel().remove(index);
 					mwin.delete(1);
 
@@ -97,7 +112,7 @@ public class Controller implements MouseListener, ActionListener {
 		case "show": {
 
 			if (mwin.getMenu().getList().getSelectedValue() != null) {
-				mwin.show(vdao.getVehiclesList().get(mwin.getMenu().getList().getSelectedIndex()).toString());
+				mwin.show(vdao.getVehiclesList().get(mwin.getMenu().getList().getSelectedIndex() + 1).toString());
 
 			} else {
 
@@ -213,20 +228,20 @@ public class Controller implements MouseListener, ActionListener {
 			}
 
 			if (!mwin.getAddPanel().getPlate().getText().isEmpty()) {
-
+				chargeModelFromZero();
 				vdao.add(new VehicleDTO(aux, mwin.getAddPanel().getPlate().getText(), tempTime));
-				mwin.getMenu().getModel().addElement(mwin.getAddPanel().getPlate().getText());
+				chargeModel();
 				mwin.getAddPanel().getPlate().setText("");
 				mwin.getAddPanel().getType().setSelectedItem("Null");
 
 			} else if (!aux.equals("Null")) {
+				chargeModelFromZero();
 				vdao.add(new VehicleDTO(aux, "null", tempTime));
-				mwin.getMenu().getModel().addElement(aux);
+				chargeModel();
 				mwin.getAddPanel().getPlate().setText("");
 				mwin.getAddPanel().getType().setSelectedItem("Null");
 
 			}
-
 			mwin.getMenu().setVisible(true);
 			mwin.getAddPanel().setVisible(false);
 
