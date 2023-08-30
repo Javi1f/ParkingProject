@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
 		setLayout(null);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		add(menu);
 		add(addPanel);
 
@@ -89,10 +89,9 @@ public class MainWindow extends JFrame {
 		return 69;
 	}
 
-	public void show(String type, String plate, LocalTime hour) {
+	public void show(String text) {
 
-		JOptionPane.showMessageDialog(null,
-				"type of vehicle : " + type + "\n" + "Vehicle plate: " + plate + "\n" + "vehicle entry time: " + hour);
+		JOptionPane.showMessageDialog(null, text);
 
 	}
 

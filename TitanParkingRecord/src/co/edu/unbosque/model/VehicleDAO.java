@@ -7,13 +7,12 @@ public class VehicleDAO implements OperationsDAO {
 	MyDoubleLinkedList<VehicleDTO> vehiclesList;
 
 	public VehicleDAO() {
-
+//		vehiclesList = new MyDoubleLinkedList<VehicleDTO>();
 		try {
 			vehiclesList = (MyDoubleLinkedList<VehicleDTO>) FileHandler.readSerializable("vehicle.jzjm");
 		} catch (Exception e) {
 			vehiclesList = new MyDoubleLinkedList<VehicleDTO>();
 		}
-
 	}
 
 	public MyDoubleLinkedList<VehicleDTO> getVehiclesList() {
@@ -38,7 +37,9 @@ public class VehicleDAO implements OperationsDAO {
 			FileHandler.writeSerializable("vehicle.jzjm", vehiclesList);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
+
 		}
 
 	}
@@ -47,7 +48,7 @@ public class VehicleDAO implements OperationsDAO {
 	public String show() {
 
 		return vehiclesList.toString();
-		
+
 	}
 
 }

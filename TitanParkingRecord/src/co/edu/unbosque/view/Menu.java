@@ -46,8 +46,6 @@ public class Menu extends JPanel {
 		list.setBounds(400 - (450 / 2), 172, 450, 280);
 		list.setFont(new Font(null, Font.ITALIC, 22));
 		model = new DefaultListModel<>();
-		model.add(0, "chupeme el pene");
-		model.add(0, "chupeme el ocioso");
 		dlr = (DefaultListCellRenderer)list.getCellRenderer();
 		dlr.setHorizontalAlignment(SwingConstants.CENTER);
 		
