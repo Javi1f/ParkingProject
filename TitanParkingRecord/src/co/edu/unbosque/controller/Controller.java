@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalTime;
 
+import co.edu.unbosque.model.MyDoubleLinkedList;
 import co.edu.unbosque.model.VehicleDAO;
 import co.edu.unbosque.model.VehicleDTO;
 import co.edu.unbosque.view.MainWindow;
@@ -15,10 +16,14 @@ public class Controller implements MouseListener, ActionListener {
 
 	private MainWindow mwin;
 	private VehicleDAO vdao;
+	private MyDoubleLinkedList<VehicleDTO> exitVehicleList;
+	private boolean listSwitch;
 
 	public Controller() {
 		mwin = new MainWindow();
 		vdao = new VehicleDAO();
+		exitVehicleList = new MyDoubleLinkedList<VehicleDTO>();
+		listSwitch = true;
 		chargeModel();
 		addReaders();
 	}
@@ -32,6 +37,9 @@ public class Controller implements MouseListener, ActionListener {
 
 		mwin.getMenu().getShow().addActionListener(this);
 		mwin.getMenu().getShow().setActionCommand("show");
+
+		mwin.getMenu().getSwitchList().addActionListener(this);
+		mwin.getMenu().getSwitchList().setActionCommand("switch");
 
 		mwin.getMenu().getAddBtn().addActionListener(this);
 		mwin.getMenu().getAddBtn().setActionCommand("addbtn");
@@ -49,6 +57,18 @@ public class Controller implements MouseListener, ActionListener {
 
 	public void run() {
 
+	}
+
+	public void chargeEspecialModel() {
+		mwin.getMenu().getModel().clear();
+		for (int i = 0; i < exitVehicleList.size(); i++) {
+			if (exitVehicleList.get(i).getType().equals("Car")
+					|| exitVehicleList.get(i).getType().equals("Motorcycle")) {
+				mwin.getMenu().getModel().addElement("DELETED: " + exitVehicleList.get(i).getPlate());
+			} else {
+				mwin.getMenu().getModel().addElement("DELETED: " + exitVehicleList.get(i).getType());
+			}
+		}
 	}
 
 	public void chargeModel() {
@@ -82,28 +102,44 @@ public class Controller implements MouseListener, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
+		case "switch": {
+			if (listSwitch) {
+				chargeEspecialModel();
+				listSwitch = false;
+			} else {
+				chargeModel();
+				listSwitch = true;
+			}
+			break;
+		}
 		case "delete": {
 
-			if (mwin.getMenu().getList().getSelectedValue() != null) {
+			if (listSwitch) {
+				if (mwin.getMenu().getList().getSelectedValue() != null) {
 
-				int aux = mwin.delete(0);
+					int aux = mwin.delete(0);
 
-				if (aux == 0) {
+					if (aux == 0) {
 
-					int index = mwin.getMenu().getList().getSelectedIndex();
-					vdao.delete(index + 1);
-					mwin.getMenu().getModel().remove(index);
-					mwin.delete(1);
+						int index = mwin.getMenu().getList().getSelectedIndex();
+						exitVehicleList.insert(vdao.getVehiclesList().get(index + 1));
+						System.out.println(exitVehicleList.toString());
+						vdao.delete(index + 1);
+						mwin.getMenu().getModel().remove(index);
+						mwin.delete(1);
+
+					} else {
+
+						mwin.delete(2);
+					}
 
 				} else {
 
-					mwin.delete(2);
+					mwin.delete(11);
+
 				}
-
 			} else {
-
-				mwin.delete(11);
-
+				mwin.show("It is not possible to delete vehicles that have already been deleted");
 			}
 
 			break;
@@ -111,13 +147,25 @@ public class Controller implements MouseListener, ActionListener {
 
 		case "show": {
 
-			if (mwin.getMenu().getList().getSelectedValue() != null) {
-				mwin.show(vdao.getVehiclesList().get(mwin.getMenu().getList().getSelectedIndex() + 1).toString());
+			if (listSwitch) {
 
+				if (mwin.getMenu().getList().getSelectedValue() != null) {
+					mwin.show(vdao.getVehiclesList().get(mwin.getMenu().getList().getSelectedIndex() + 1).toString());
+
+				} else {
+
+					mwin.delete(11);
+
+				}
 			} else {
+				if (mwin.getMenu().getList().getSelectedValue() != null) {
+					mwin.show(exitVehicleList.get(mwin.getMenu().getList().getSelectedIndex()).toString());
 
-				mwin.delete(11);
+				} else {
 
+					mwin.delete(11);
+
+				}
 			}
 
 			break;
@@ -125,11 +173,15 @@ public class Controller implements MouseListener, ActionListener {
 
 		case "addbtn": {
 
-			if (!(vdao.getVehiclesList().size() >= 100)) {
-				mwin.getMenu().setVisible(false);
-				mwin.getAddPanel().setVisible(true);
+			if (listSwitch) {
+				if (!(vdao.getVehiclesList().size() >= 100)) {
+					mwin.getMenu().setVisible(false);
+					mwin.getAddPanel().setVisible(true);
+				} else {
+					mwin.show("We can´t accept more vehicles now, come back later...");
+				}
 			} else {
-				mwin.show("We can´t accept more vehicles now, come back later...");
+				mwin.show("first change the list to add correctly");
 			}
 
 			break;

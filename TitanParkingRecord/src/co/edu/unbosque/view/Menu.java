@@ -24,7 +24,7 @@ public class Menu extends JPanel {
 	private DefaultListModel<String> model;
 	private DefaultListCellRenderer dlr;
 	private JPopupMenu popUp;
-	private JMenuItem delete, show;
+	private JMenuItem delete, show, switchList;
 	private JScrollPane scroll;
 	private JButton addBtn;
 
@@ -46,9 +46,9 @@ public class Menu extends JPanel {
 		list.setBounds(400 - (450 / 2), 172, 450, 280);
 		list.setFont(new Font(null, Font.ITALIC, 22));
 		model = new DefaultListModel<>();
-		dlr = (DefaultListCellRenderer)list.getCellRenderer();
+		dlr = (DefaultListCellRenderer) list.getCellRenderer();
 		dlr.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setModel(model);
 
@@ -58,10 +58,12 @@ public class Menu extends JPanel {
 
 		delete = new JMenuItem("Delete this vehicle");
 		show = new JMenuItem("Show this vehicle");
+		switchList = new JMenuItem("Switch to the list of deleted vehicles");
 
 		popUp = new JPopupMenu();
 		popUp.add(delete);
 		popUp.add(show);
+		popUp.add(switchList);
 
 		addBtn = new JButton();
 		addBtn.setBounds(400 - (120 / 2) - 10, 480, 120, 60);
@@ -78,6 +80,26 @@ public class Menu extends JPanel {
 		p1.add(background);
 		add(p1);
 		setVisible(true);
+	}
+
+	public DefaultListCellRenderer getDlr() {
+		return dlr;
+	}
+
+	public void setDlr(DefaultListCellRenderer dlr) {
+		this.dlr = dlr;
+	}
+
+	public JMenuItem getSwitchList() {
+		return switchList;
+	}
+
+	public void setSwitchList(JMenuItem switchList) {
+		this.switchList = switchList;
+	}
+
+	public JLabel getBackground() {
+		return background;
 	}
 
 	public void setBackground(JLabel background) {
