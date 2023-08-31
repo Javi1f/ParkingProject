@@ -7,7 +7,6 @@ public class VehicleDAO implements OperationsDAO {
 	MyDoubleLinkedList<VehicleDTO> vehiclesList;
 
 	public VehicleDAO() {
-//		vehiclesList = new MyDoubleLinkedList<VehicleDTO>();
 		try {
 			vehiclesList = (MyDoubleLinkedList<VehicleDTO>) FileHandler.readSerializable("vehicle.jzjm");
 		} catch (Exception e) {
